@@ -18,10 +18,15 @@ object Boot {
   Slf4jLoggerImpl.forceUsingThisImplementation()
 
   def main(args: Array[String]) {
+    val (interface, port) = args match {
+      case Array(_interface, _port) => (_interface, _port.toInt)
+      case _ =>
+        error("Usage: <network-interface> <port>")
+    }
     implicit val appActSystem = ActorSystem("uima-ext")
     val nlpFacade = appActSystem.actorOf(Props[NLPFacade], "nlp-facade")
     val router = appActSystem.actorOf(Props(classOf[Router], nlpFacade), "main-http-router")
 
-    IO(Http) ! Http.Bind(router, interface = "localhost", port = 8080)
+    IO(Http) ! Http.Bind(router, interface = interface, port = port)
   }
 }
