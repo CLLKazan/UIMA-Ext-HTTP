@@ -108,7 +108,7 @@ object NLPFacade {
     val token2WordIdx = (for (word <- JCasUtil.select(jCas, classOf[Word]))
       yield word.getToken -> word).toMap
     for (sentence <- JCasUtil.select(jCas, classOf[Sentence])) {
-      for (token <- JCasUtil.select(jCas, classOf[Token])) {
+      for (token <- JCasUtil.selectCovered(jCas, classOf[Token], sentence)) {
         result.append(escapeToken(token.getCoveredText()))
         result.append('\t')
         result.append(token.getType().getShortName())
