@@ -5,6 +5,12 @@ package ru.kfu.itis.issst.uima.http.nlp
 
 import akka.actor.Actor
 import akka.actor.ActorLogging
+import org.apache.uima.fit.factory.ExternalResourceFactory
+import org.apache.uima.fit.util.JCasUtil
+import ru.kfu.itis.issst.uima.morph.commons.{GramModelBasedTagMapper, TagAssembler}
+import ru.kfu.itis.issst.uima.morph.dictionary.MorphDictionaryAPIFactory.getMorphDictionaryAPI
+import ru.kfu.itis.issst.uima.morph.dictionary.{MorphDictionaryAPIFactory, MorphDictionaryAPI}
+import ru.kfu.itis.issst.uima.postagger.{PosTaggerAPI, MorphCasUtils}
 import ru.kfu.itis.issst.uima.tokenizer.TokenizerAPI
 import ru.kfu.itis.issst.uima.segmentation.SentenceSplitterAPI
 import org.apache.uima.resource.metadata.impl.Import_impl
@@ -15,10 +21,8 @@ import org.apache.uima.analysis_engine.AnalysisEngine
 import akka.actor.Status
 import org.apache.uima.jcas.JCas
 import ru.kfu.cll.uima.segmentation.fstype.Sentence
-import org.uimafit.util.JCasUtil
 import org.opencorpora.cas.Word
 import ru.kfu.cll.uima.tokenizer.fstype.Token
-import ru.ksu.niimm.cll.uima.morph.opencorpora.MorphCasUtils
 import akka.actor.ActorRef
 import akka.actor.Props
 import akka.actor.actorRef2Scala
@@ -59,14 +63,15 @@ class NLPWorker extends Actor with ActorLogging {
   private var cas: JCas = null
 
   override def preStart() {
+    val gramModelDesc = getMorphDictionaryAPI.getGramModelDescription()
+    val tagAssemblerDesc = TagAssembler.createDescription()
+    ExternalResourceFactory.bindExternalResource(tagAssemblerDesc,
+      GramModelBasedTagMapper.RESOURCE_GRAM_MODEL, gramModelDesc)
     val analyzers = Map(
-      "tokenizer" -> TokenizerAPI.getAEImport(),
-      "sentenceSplitter" -> SentenceSplitterAPI.getAEImport(),
-      "pos-tagger" -> {
-        val posTaggerImport = new Import_impl()
-        posTaggerImport.setName("pos_tagger")
-        posTaggerImport
-      })
+      "tokenizer" -> TokenizerAPI.getAEImport,
+      "sentenceSplitter" -> SentenceSplitterAPI.getAEImport,
+      "pos-tagger" -> PosTaggerAPI.getAEImport,
+      "pos-tag-assembler" -> tagAssemblerDesc)
     val aggregateDesc = PipelineDescriptorUtils.createAggregateDescription(analyzers)
     engine = UIMAFramework.produceAnalysisEngine(aggregateDesc)
     cas = engine.newJCas()

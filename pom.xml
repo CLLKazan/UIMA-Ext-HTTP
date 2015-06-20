@@ -99,7 +99,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>ru.ksu.niimm.cll.uima</groupId>
-			<artifactId>uima-morph-opencorpora</artifactId>
+			<artifactId>uima-ext-postagger-api</artifactId>
 			<version>${uima-ext.version}</version>
 			<exclusions>
 				<exclusion>
@@ -107,6 +107,18 @@
 					<artifactId>logback-classic</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>ru.ksu.niimm.cll.uima</groupId>
+			<artifactId>uima-ext-postagger-tcrf</artifactId>
+			<version>${uima-ext.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>ru.ksu.niimm.cll.uima</groupId>
+			<artifactId>uima-ext-morph-dictionary-opencorpora</artifactId>
+			<version>${uima-ext.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>ru.ksu.niimm.cll.uima</groupId>
@@ -198,6 +210,6 @@
 
 	<properties>
 		<scala.version>2.11.1</scala.version>
-		<uima-ext.version>0.3-SNAPSHOT</uima-ext.version>
+		<uima-ext.version>0.5-SNAPSHOT</uima-ext.version>
 	</properties>
 </project>
