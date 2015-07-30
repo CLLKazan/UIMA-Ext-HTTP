@@ -110,7 +110,18 @@
 		</dependency>
 		<dependency>
 			<groupId>ru.ksu.niimm.cll.uima</groupId>
+			<artifactId>uima-ext-lemmatizer-api</artifactId>
+			<version>${uima-ext.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ru.ksu.niimm.cll.uima</groupId>
 			<artifactId>uima-ext-postagger-tcrf</artifactId>
+			<version>${uima-ext.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>ru.ksu.niimm.cll.uima</groupId>
+			<artifactId>uima-ext-lemmatizer-opencorpora</artifactId>
 			<version>${uima-ext.version}</version>
 			<scope>runtime</scope>
 		</dependency>
